@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Profiling;
+using UnityEngine.Rendering;
 
 public class InstancedIndirectGrassRenderer : MonoBehaviour
 {
@@ -61,6 +62,7 @@ public class InstancedIndirectGrassRenderer : MonoBehaviour
     private List<MyCell> _myCells = new();
     private int _kernelIndex = -1;
     private uint _kernelThreadGroupSizeX;
+    private int _renderedInstancesCount = 0;
 
     //=====================================================
 
@@ -187,24 +189,37 @@ public class InstancedIndirectGrassRenderer : MonoBehaviour
             renderBound,
             argsBuffer
         );
+
+        // Async readback for stats window fix
+        AsyncGPUReadback.Request(argsBuffer, (request) =>
+        {
+            if (this != null && !request.hasError)
+            {
+                var args = request.GetData<uint>();
+                _renderedInstancesCount = (int)args[1];
+            }
+        });
     }
 
-    //private void OnGUI()
-    //{
-    //    GUI.contentColor = Color.black;
-    //    GUI.Label(
-    //        new Rect(200, 0, 400, 60),
-    //        $"After CPU cell frustum culling,\n"
-    //            + $"-Visible cell count = {visibleCellIDList.Count}/{cellCountX * cellCountZ}\n"
-    //            + $"-Real compute dispatch count = {dispatchCount} (saved by batching = {visibleCellIDList.Count - dispatchCount})"
-    //    );
+    private void OnGUI()
+    {
+        GUI.contentColor = Color.black;
+        GUI.Label(
+            new Rect(0, 0, 400, 100),
+              $"-Visible cell count = {visibleCellIDList.Count}/{cellCountX * cellCountY * cellCountZ}\n"
+                + $"-Real compute dispatch count = {dispatchCount} (saved by batching = {visibleCellIDList.Count - dispatchCount})\n"
+                + $"-Rendered Grass Blades: {_renderedInstancesCount}\n"
+                + $"-Grass Vertices: {_renderedInstancesCount * 3}\n"
+                + $"-Grass Triangles: {_renderedInstancesCount}"
+        );
 
-    //    shouldBatchDispatch = GUI.Toggle(
-    //        new Rect(400, 400, 200, 100),
-    //        shouldBatchDispatch,
-    //        "shouldBatchDispatch"
-    //    );
-    //}
+        /*
+        shouldBatchDispatch = GUI.Toggle(
+            new Rect(400, 400, 200, 100),
+            shouldBatchDispatch,
+            "shouldBatchDispatch"
+        );*/
+    }
 
     void OnDisable()
     {
