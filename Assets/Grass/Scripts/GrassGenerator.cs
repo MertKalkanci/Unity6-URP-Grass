@@ -32,6 +32,7 @@ public class GrassGenerator : MonoBehaviour
 
     private IEnumerator Setup()
     {
+        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
         Unity.Mathematics.Random _rng = new Unity.Mathematics.Random(seed);
         
         Mesh mesh = _meshFilter.sharedMesh;
@@ -95,7 +96,8 @@ public class GrassGenerator : MonoBehaviour
             //    yield return new WaitForEndOfFrame();
         }
         
-        Debug.Log("passing grass positions to renderer, count:" + _nativeArraylength);
+        stopwatch.Stop();
+        Debug.Log("passing grass positions to renderer, count:" + _nativeArraylength + " generated in " + stopwatch.ElapsedMilliseconds + " ms");
         //debug some positions
         InstancedIndirectGrassRenderer.instance.SetGrassPositions(newPositionList);
         //var list = _vertices.Select(x => x.position).ToList();
