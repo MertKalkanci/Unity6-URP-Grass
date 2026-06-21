@@ -1,4 +1,4 @@
-﻿Shader "MobileDrawMeshInstancedIndirect/SingleGrass"
+Shader "MobileDrawMeshInstancedIndirect/SingleGrass"
 {
     Properties
     {
@@ -121,7 +121,6 @@
 
             half3 ApplySingleDirectLight(Light light, half3 N, half3 V, half3 albedo, half positionOSY)
             {
-                /*
                 half3 H = normalize(light.direction + V);
 
                 //direct diffuse 
@@ -137,10 +136,9 @@
 
                 //add direct directSpecular to result
                 directSpecular *= 0.1 * positionOSY;//only apply directSpecular to grass's top area, to simulate grass AO
-                */
 
                 half3 lighting = light.color * (light.shadowAttenuation * light.distanceAttenuation);
-                half3 result = (albedo /* * directDiffuse + directSpecular */) * lighting;
+                half3 result = (albedo * directDiffuse + directSpecular) * lighting;
                 return result; 
             }
 
@@ -207,11 +205,13 @@
 
                 //lighting data
                 Light mainLight;
-#if _MAIN_LIGHT_SHADOWS
+#if defined(_MAIN_LIGHT_SHADOWS) || defined(_MAIN_LIGHT_SHADOWS_CASCADE) || defined(_MAIN_LIGHT_SHADOWS_SCREEN)
                 mainLight = GetMainLight(TransformWorldToShadowCoord(positionWS));
 #else
                 mainLight = GetMainLight();
 #endif
+                // FIX: unity_LightData.z is 0 when DrawMeshInstancedIndirect is used, so we must force distanceAttenuation to 1
+                mainLight.distanceAttenuation = 1.0;
                 half3 randomAddToN = (_RandomNormal* sin(perGrassPivotPosWS.x * 82.32523 + perGrassPivotPosWS.z) + wind * -0.25) * cameraTransformRightWS;//random normal per grass 
                 //default grass's normal is pointing 100% upward in world space, it is an important but simple grass normal trick
                 //-apply random to normal else lighting is too uniform

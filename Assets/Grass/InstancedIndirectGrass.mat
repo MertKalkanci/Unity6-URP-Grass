@@ -75,12 +75,12 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _GrassHeight: 0.05
-    - _GrassWidth: 0.01
+    - _GrassHeight: 0.1
+    - _GrassWidth: 0.1
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _QueueOffset: 0
-    - _RandomNormal: 0
+    - _RandomNormal: 0.15
     - _ReceiveShadows: 1
     - _SampleGI: 0
     - _Smoothness: 0.5
@@ -89,7 +89,7 @@ Material:
     - _SrcBlend: 1
     - _Surface: 0
     - _WindAFrequency: 2
-    - _WindAIntensity: 0.1
+    - _WindAIntensity: 0.11
     - _WindBFrequency: 7.7
     - _WindBIntensity: 0.025
     - _WindCFrequency: 11.7
@@ -103,7 +103,7 @@ Material:
     - _BoundSize: {r: 1, g: 1, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _GroundColor: {r: 0.22141227, g: 0.4811321, b: 0.079432175, a: 1}
+    - _GroundColor: {r: 0.2235476, g: 0.4433962, b: 0.10666606, a: 1}
     - _PivotPosWS: {r: -9.47449, g: -0, b: 0.28024, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _WindADirection: {r: 0.1, g: 0.1, b: 0, a: 1}
